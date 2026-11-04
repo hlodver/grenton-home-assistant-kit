@@ -58,6 +58,15 @@ object types. It reads `site.yaml` for the rest.
 
 See [`examples/site.example.yaml`](examples/site.example.yaml) for every key.
 
+## Documentation
+
+- [Workflow](docs/workflow.md): new house, every change, HA after an interface change
+- [The .omp file](docs/omp-format.md): what's inside and how to edit it safely
+- [myGrenton interfaces](docs/mygrenton-format.md): storage, bindings, widget indices
+- [Home Assistant](docs/home-assistant.md): the integration, and what `ha sync` does
+- [Lessons](docs/lessons.md): things that cost time on a real installation
+- [Roadmap](docs/ROADMAP.md)
+
 ## Install
 
 ```sh

@@ -59,16 +59,13 @@ house-specific lives here.
       (or a fresh run on the first house).
 - [ ] `blink` tested on site.
 
-## Phase 4: documentation
+## Phase 4: documentation (done 2026-11-04)
 
-Everything in English and in our own words; nothing is copied from Object Manager.
+Written in English and in our own words; nothing is copied from Object Manager.
 
-- `omp-format.md`: the zip, `system.xml` and `system-gm.json`, the manifest.
-- `mygrenton-format.md`: interface storage, widget bindings and indices, nameOnCLU.
-- `home-assistant.md`: the integration and its limits, re-import, naming.
-- `workflow.md`: OM → git → generate → send → HA.
-- `lessons.md`.
-- `CLAUDE.md`: rules for an agent working on a Grenton house.
+- [x] `omp-format.md`, `mygrenton-format.md`, `home-assistant.md`, `workflow.md`, `lessons.md`
+- [x] `CLAUDE.md` with the development rules for this repo
+- [x] README: getting started and links
 
 ## Phase 5: tests and CI
 
