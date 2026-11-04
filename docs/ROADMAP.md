@@ -85,10 +85,14 @@ Written in English and in our own words; nothing is copied from Object Manager.
 - [x] GitHub Actions: pytest on Python 3.11 and 3.13, plus a check that the fixture
       matches its generator.
 
-## Phase 6: publish
+## Phase 6: publish (done 2026-11-04)
 
-- Make the repo public and post on the HA community and Grenton forums.
-- Separately, contribute THERMOSTAT_V2 support to the HA Grenton integration.
+- [x] Repo public: github.com/hlodver/grenton-home-assistant-kit
+- [x] Home Assistant Community, Share your Projects!: [Grenton + Home Assistant](https://community.home-assistant.io/t/grenton-home-assistant/1032384)
+- [x] A pointer in the older [GRENTON integration](https://community.home-assistant.io/t/grenton-integration/243012) thread
+- [x] Show and tell on the integration: [sszczep/homeassistant-grenton#17](https://github.com/sszczep/homeassistant-grenton/discussions/17),
+      offering PRs for a `THERMOSTAT_V2` climate entity and a reconfigure step that reloads the interface
+- [ ] Next: follow up on replies and issues, and the two integration PRs if sszczep wants them
 
 ## Known limits
 
