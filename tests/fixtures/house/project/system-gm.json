@@ -1,109 +1,285 @@
 {
-  "label": "Test House",
-  "projectKey": "${GRENTON_PROJECT_KEY}",
-  "clus": [
-    {
-      "name": "CLU123456789",
-      "nameOnCLU": "CLU123456789",
-      "peripheries": [
-        {
-          "name": "Thermo_Living",
-          "nameOnCLU": "THE0001",
-          "typeName": "Thermostat",
-          "typeId": "18",
-          "typeVersion": "2",
-          "embeddedFeatures": [
-            {
-              "name": "Source",
-              "index": 0,
-              "initValue": "CLU123456789->x270000001_PANELSENSTEMP_01->Value"
-            },
-            {
-              "name": "Target",
-              "index": 1,
-              "initValue": "CLU123456789->x330000001_DOUT_01->Value"
-            }
-          ]
-        }
-      ],
-      "modules": [
-        {
-          "name": "x201000001_DOUT_01",
-          "nameOnCLU": "DOU0001",
-          "type": "DOUT"
+  "label" : "Test House",
+  "projectKey" : {
+    "keyBytes" : "${GRENTON_PROJECT_KEY}",
+    "ivBytes" : "${GRENTON_PROJECT_IV}"
+  },
+  "clus" : [ {
+    "cipherKeyType" : "PROJECT_KEY",
+    "name" : "CLU123456789",
+    "ipAddress" : "10.0.0.2",
+    "nameOnCLU" : "CLU123456789",
+    "peripheries" : [ {
+      "name" : "Thermo_Living",
+      "nameOnCLU" : "THE0001",
+      "typeName" : "Thermostat",
+      "typeId" : "18",
+      "typeVersion" : "2",
+      "embeddedFeatures" : [ {
+        "initValue" : "CLU123456789->x270000001_PANELSENSTEMP_01->Value",
+        "index" : 0,
+        "name" : "Source"
+      }, {
+        "initValue" : "CLU123456789->x330000001_DOUT_01->Value",
+        "index" : 1,
+        "name" : "Target"
+      } ],
+      "events" : [ {
+        "name" : "OnChange",
+        "index" : 0,
+        "command" : [ ],
+        "customSchemeCommands" : [ ],
+        "paramType" : [ ]
+      } ],
+      "methods" : [ ]
+    } ],
+    "embeddedFeatures" : [ ],
+    "definedFeatures" : [ ],
+    "events" : [ {
+      "name" : "OnInit",
+      "index" : 0,
+      "command" : [ "CLU123456789->Thermo_Living->Start()" ],
+      "customSchemeCommands" : [ ],
+      "paramType" : [ ]
+    } ],
+    "modules" : [ {
+      "name" : "x201000001_DOUT_01",
+      "nameOnCLU" : "DOU0001",
+      "type" : "DOUT",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 201000001,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x201000001_DOUT_02",
+      "nameOnCLU" : "DOU0004",
+      "type" : "DOUT",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 201000001,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x490000000001_DALI_GEAR_01",
+      "nameOnCLU" : "DAL0001",
+      "type" : "DALI_GEAR",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 490000000,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x270000001_PANEL_01_Living_room_L",
+      "nameOnCLU" : "PAN0001",
+      "type" : "PANEL",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 270000001,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x270000001_PANELSENSTEMP_01",
+      "nameOnCLU" : "PST0001",
+      "type" : "PANELSENSTEMP",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 270000001,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x270000001_PANEL_BUTTON_01",
+      "nameOnCLU" : "PBU0001",
+      "type" : "PANEL_BUTTON",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ {
+        "initValue" : "0",
+        "unit" : "",
+        "divisor" : 1.0,
+        "index" : 1,
+        "accessType" : "ALL",
+        "type" : {
+          "restrictionValues" : [ ],
+          "restrictionValuesNames" : [ ],
+          "paramType" : "NUMBER"
         },
-        {
-          "name": "x490000000001_DALI_GEAR_01",
-          "nameOnCLU": "DAL0001",
-          "type": "DALI_GEAR"
+        "value" : "",
+        "name" : "Mode",
+        "hit" : "mode"
+      }, {
+        "initValue" : "Kitchen",
+        "unit" : "",
+        "divisor" : 1.0,
+        "index" : 2,
+        "accessType" : "ALL",
+        "type" : {
+          "restrictionValues" : [ ],
+          "restrictionValuesNames" : [ ],
+          "paramType" : "NUMBER"
         },
-        {
-          "name": "x270000001_PANEL_01_Living_room_L",
-          "nameOnCLU": "PAN0001",
-          "type": "PANEL",
-          "events": []
+        "value" : "",
+        "name" : "Label",
+        "hit" : "label"
+      } ],
+      "events" : [ {
+        "name" : "OnHold",
+        "index" : 5,
+        "command" : [ ],
+        "customSchemeCommands" : [ ],
+        "paramType" : [ ]
+      }, {
+        "name" : "OnClick",
+        "index" : 6,
+        "command" : [ "CLU987654321->x320000001_DIMM_01_Kitchen->Switch(0)" ],
+        "customSchemeCommands" : [ ],
+        "paramType" : [ ]
+      } ],
+      "moduleDevice" : {
+        "moduleID" : 270000001,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x330000001_DOUT_01",
+      "nameOnCLU" : "DOU0002",
+      "type" : "DOUT",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 330000001,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x330000001_DOUT_02",
+      "nameOnCLU" : "DOU0003",
+      "type" : "DOUT",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 330000001,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    } ],
+    "methods" : [ ],
+    "scripts" : [ {
+      "name" : "hello",
+      "manualEdit" : true,
+      "content" : "LS0gZ3JlZXQgdGhlIGhvdXNlCmxvY2FsIGEgPSAxCg==",
+      "scriptParams" : [ ]
+    } ]
+  }, {
+    "cipherKeyType" : "PROJECT_KEY",
+    "name" : "CLU987654321",
+    "ipAddress" : "10.0.0.3",
+    "nameOnCLU" : "CLU555555",
+    "peripheries" : [ ],
+    "embeddedFeatures" : [ ],
+    "definedFeatures" : [ ],
+    "events" : [ ],
+    "modules" : [ {
+      "name" : "x320000001_DIMM_01_Kitchen",
+      "nameOnCLU" : "DIM0001",
+      "type" : "DIMM",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ {
+        "initValue" : "0",
+        "unit" : "",
+        "divisor" : 1.0,
+        "index" : 3,
+        "accessType" : "ALL",
+        "type" : {
+          "restrictionValues" : [ ],
+          "restrictionValuesNames" : [ ],
+          "paramType" : "NUMBER"
         },
-        {
-          "name": "x270000001_PANELSENSTEMP_01",
-          "nameOnCLU": "PST0001",
-          "type": "PANELSENSTEMP",
-          "events": []
-        },
-        {
-          "name": "x270000001_PANEL_BUTTON_01",
-          "nameOnCLU": "PBU0001",
-          "type": "PANEL_BUTTON",
-          "events": [
-            {
-              "name": "OnClick",
-              "index": 0,
-              "command": [
-                "CLU987654321->x320000001_DIMM_01_Kitchen->Switch(0)"
-              ]
-            }
-          ]
-        },
-        {
-          "name": "x330000001_DOUT_01",
-          "nameOnCLU": "DOU0002",
-          "type": "DOUT",
-          "events": []
-        },
-        {
-          "name": "x330000001_DOUT_02",
-          "nameOnCLU": "DOU0003",
-          "type": "DOUT",
-          "events": []
-        },
-        {
-          "name": "x201000001_DOUT_02",
-          "nameOnCLU": "DOU0004",
-          "type": "DOUT",
-          "events": []
-        }
-      ]
-    },
-    {
-      "name": "CLU987654321",
-      "nameOnCLU": "CLU555555",
-      "peripheries": [],
-      "modules": [
-        {
-          "name": "x320000001_DIMM_01_Kitchen",
-          "nameOnCLU": "DIM0001",
-          "type": "DIMM"
-        },
-        {
-          "name": "x320000002_DIMM_01_Cabinet",
-          "nameOnCLU": "DIM0002",
-          "type": "DIMM"
-        },
-        {
-          "name": "x320000003_DIMM_01_Spare",
-          "nameOnCLU": "DIM0003",
-          "type": "DIMM"
-        }
-      ]
-    }
-  ]
+        "value" : "",
+        "name" : "MinValue",
+        "hit" : "minvalue"
+      } ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 320000001,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x320000002_DIMM_01_Cabinet",
+      "nameOnCLU" : "DIM0002",
+      "type" : "DIMM",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 320000002,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    }, {
+      "name" : "x320000003_DIMM_01_Spare",
+      "nameOnCLU" : "DIM0003",
+      "type" : "DIMM",
+      "description" : "",
+      "labels" : [ ],
+      "classTypeId" : 0,
+      "tfBusOrder" : 0,
+      "embeddedFeatures" : [ ],
+      "events" : [ ],
+      "moduleDevice" : {
+        "moduleID" : 320000003,
+        "hwType" : 1
+      },
+      "methods" : [ ]
+    } ],
+    "methods" : [ ],
+    "scripts" : [ ]
+  } ]
 }

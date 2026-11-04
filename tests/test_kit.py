@@ -1,3 +1,4 @@
+import base64
 import json
 import shutil
 import zipfile
@@ -91,9 +92,12 @@ def test_write_adds_tree_entry_once(house):
     assert xml.count("<type>MYGRENTON_INTERFACE</type>") == 1
     mygrenton.write(house)
     assert (house.project_dir / "system.xml").read_text() == xml
+    tree_id, added = mygrenton.ensure_tree_entry(house.project_dir, house.interface["label"])
+    assert not added
     man = json.loads((house.project_dir / ".omp-manifest.json").read_text())
     names = [e["name"] for e in man["entries"]]
-    assert "nodes/3/data.json" in names and names.count("nodes/3/data.json") == 1
+    assert names.count(f"nodes/{tree_id}/data.json") == 1
+    assert (house.project_dir / "nodes" / str(tree_id) / "data.json").exists()
 
 
 def test_pack_restores_key_and_unpack_redacts(house, tmp_path):
@@ -101,9 +105,11 @@ def test_pack_restores_key_and_unpack_redacts(house, tmp_path):
     omp.pack(house.project_dir, out, house.secrets_file)
     with zipfile.ZipFile(out) as z:
         assert KEY in z.read("properties.xml").decode()
-    before = {p.name: p.read_bytes() for p in house.project_dir.iterdir()}
+    files = lambda: {str(p.relative_to(house.project_dir)): p.read_bytes()  # noqa: E731
+                     for p in house.project_dir.rglob("*") if p.is_file()}
+    before = files()
     omp.unpack(out, house.project_dir, house.secrets_file)
-    after = {p.name: p.read_bytes() for p in house.project_dir.iterdir()}
+    after = files()
     assert {k: v for k, v in after.items() if k != ".omp-manifest.json"} == \
            {k: v for k, v in before.items() if k != ".omp-manifest.json"}
     omp.pack(house.project_dir, tmp_path / "again.omp", house.secrets_file)
@@ -190,3 +196,164 @@ def test_secrets_from_omp_refuses_a_different_key(house, tmp_path):
     other.write_text("GRENTON_PROJECT_KEY=other\nGRENTON_PROJECT_IV=other\n")
     with pytest.raises(SystemExit, match="different key"):
         omp.secrets_from_omp(out, other)
+
+
+# --- edits (phase 5) -------------------------------------------------------------------
+
+BUTTON, KITCHEN = "x270000001_PANEL_BUTTON_01", "x320000001_DIMM_01_Kitchen"
+
+
+def _texts(house):
+    return ((house.project_dir / "system.xml").read_text(), (house.project_dir / "system-gm.json").read_text())
+
+
+def _gm(house):
+    gm = json.loads((house.project_dir / "system-gm.json").read_text())
+    return {m["name"]: m for c in gm["clus"] for m in c["modules"]}, gm
+
+
+def _dirty(house, obj):
+    import re
+    xml = (house.project_dir / "system.xml").read_text()
+    m = re.search(rf"<name>{obj}</name>\s*<parent .*?<isDirty>(\w+)</isDirty>", xml, re.S)
+    return m.group(1) == "true"
+
+
+def test_add_event_command_to_empty_and_full_events(house):
+    d = house.project_dir
+    omp.add_event_command(d, BUTTON, "OnHold", "CLU987654321->x320000001_DIMM_01_Kitchen->HoldValue(4500)")
+    omp.add_event_command(d, BUTTON, "OnClick", "CLU123456789->hello()")
+    mods, _ = _gm(house)
+    ev = {e["name"]: e["command"] for e in mods[BUTTON]["events"]}
+    assert ev["OnHold"] == ["CLU987654321->x320000001_DIMM_01_Kitchen->HoldValue(4500)"]
+    assert ev["OnClick"] == ["CLU987654321->x320000001_DIMM_01_Kitchen->Switch(0)", "CLU123456789->hello()"]
+    xml, _ = _texts(house)
+    assert "<string>CLU123456789-&gt;hello()</string>" in xml
+    assert "HoldValue(4500)</string>" in xml
+    assert _dirty(house, BUTTON)
+
+
+def test_remove_and_replace_event_command(house):
+    d = house.project_dir
+    before = _texts(house)
+    omp.add_event_command(d, BUTTON, "OnHold", "CLU123456789->hello()")
+    omp.remove_event_command(d, BUTTON, "CLU123456789->hello()")
+    xml, js = _texts(house)
+    # back to OM's own form for an empty event: <commands .../> and "command" : [ ]
+    assert js == before[1]
+    assert xml.replace("<isDirty>true</isDirty>", "<isDirty>false</isDirty>") == before[0]
+    omp.replace_event_command(d, BUTTON, f"CLU987654321->{KITCHEN}->Switch(0)", f"CLU987654321->{KITCHEN}->SwitchOn(0)")
+    mods, _ = _gm(house)
+    assert {e["name"]: e["command"] for e in mods[BUTTON]["events"]}["OnClick"] == [f"CLU987654321->{KITCHEN}->SwitchOn(0)"]
+    omp.clear_events(d, BUTTON)
+    mods, _ = _gm(house)
+    assert all(not e["command"] for e in mods[BUTTON]["events"])
+    with pytest.raises(SystemExit):
+        omp.remove_event_command(d, BUTTON, "CLU123456789->nothing()")
+
+
+def test_set_feature_changes_both_files_only_there(house):
+    d = house.project_dir
+    xml0, js0 = _texts(house)
+    assert omp.get_feature(d, BUTTON, "Label") == "Kitchen"
+    omp.set_feature(d, BUTTON, "Label", 'Kitchen "main"')
+    assert omp.get_feature(d, BUTTON, "Label") == 'Kitchen "main"'   # XML text; quotes need no escaping there
+    mods, _ = _gm(house)
+    assert {f["name"]: f["initValue"] for f in mods[BUTTON]["embeddedFeatures"]}["Label"] == 'Kitchen "main"'
+    assert {f["name"]: f["initValue"] for f in mods[KITCHEN]["embeddedFeatures"]}["MinValue"] == "0"  # untouched
+    xml, js = _texts(house)
+    assert len(js.splitlines()) == len(js0.splitlines())
+    assert _dirty(house, BUTTON) and not _dirty(house, KITCHEN)
+
+
+def test_add_and_set_script(house):
+    d = house.project_dir
+    omp.add_script(d, "CLU123456789", "evening", "-- evening scene\nlocal x = 1", [("level", "NUMBER", "0.3")])
+    _, gm = _gm(house)
+    scripts = {s["name"]: s for s in gm["clus"][0]["scripts"]}
+    assert set(scripts) == {"hello", "evening"}
+    assert base64.b64decode(scripts["evening"]["content"]).decode() == "-- evening scene\nlocal x = 1"
+    assert scripts["evening"]["scriptParams"][0]["name"] == "level"
+    assert (d / "scripts" / "CLU123456789" / "evening.lua").read_text() == "-- evening scene\nlocal x = 1"
+    assert (d / "scripts" / "CLU123456789" / "evening.lua.vd").exists()
+    man = {e["name"] for e in json.loads((d / ".omp-manifest.json").read_text())["entries"]}
+    assert {"scripts/CLU123456789/evening.lua", "scripts/CLU123456789/evening.lua.vd"} <= man
+    xml, _ = _texts(house)
+    assert "<name>evening</name>" in xml and "<paramType>NUMBER</paramType>" in xml
+    with pytest.raises(SystemExit, match="already exists"):
+        omp.add_script(d, "CLU123456789", "evening", "x")
+    omp.set_script(d, "CLU123456789", "hello", "-- new text")
+    _, gm = _gm(house)
+    hello = next(s for s in gm["clus"][0]["scripts"] if s["name"] == "hello")
+    assert base64.b64decode(hello["content"]).decode() == "-- new text"
+    assert _dirty(house, "hello")
+    # a script on a CLU with no scripts yet
+    omp.add_script(d, "CLU987654321", "first", "local y = 2")
+    _, gm = _gm(house)
+    assert [s["name"] for s in gm["clus"][1]["scripts"]] == ["first"]
+
+
+def test_edits_survive_pack_and_unpack(house, tmp_path):
+    d = house.project_dir
+    omp.add_event_command(d, BUTTON, "OnHold", "CLU123456789->hello()")
+    omp.add_script(d, "CLU123456789", "evening", "local x = 1")
+    out = tmp_path / "edited.omp"
+    omp.pack(d, out, house.secrets_file)
+    with zipfile.ZipFile(out) as z:
+        assert "scripts/CLU123456789/evening.lua" in z.namelist()
+        assert KEY in z.read("system-gm.json").decode()
+    omp.pack(d, tmp_path / "again.omp", house.secrets_file)
+    assert (tmp_path / "again.omp").read_bytes() == out.read_bytes()
+
+
+def test_pack_refuses_files_missing_from_manifest(house, tmp_path):
+    (house.project_dir / "stray.txt").write_text("x")
+    with pytest.raises(SystemExit, match="not in manifest"):
+        omp.pack(house.project_dir, tmp_path / "x.omp", house.secrets_file)
+
+
+def test_import_workspace(house, tmp_path):
+    d = house.project_dir
+    ws = tmp_path / "workspace" / "Test House"
+    shutil.copytree(d, ws, ignore=shutil.ignore_patterns(".omp-manifest.json"))
+    for f in ("properties.xml", "system-gm.json"):  # OM's workspace holds the real key
+        p = ws / f
+        p.write_text(p.read_text().replace("${GRENTON_PROJECT_KEY}", KEY).replace("${GRENTON_PROJECT_IV}", IV))
+    (ws / "scripts" / "CLU123456789" / "hello.lua").write_text("-- changed in OM\n")
+    (ws / "nodes" / "9").mkdir(parents=True)
+    (ws / "nodes" / "9" / "data.json").write_text("{}")
+    omp.import_workspace(ws, d, house.secrets_file)
+    assert (d / "scripts" / "CLU123456789" / "hello.lua").read_text() == "-- changed in OM\n"
+    assert KEY not in (d / "properties.xml").read_text()                  # redacted again
+    names = {e["name"] for e in json.loads((d / ".omp-manifest.json").read_text())["entries"]}
+    assert {"nodes/", "nodes/9/", "nodes/9/data.json"} <= names
+    omp.pack(d, tmp_path / "x.omp", house.secrets_file)                    # still packs
+    # a file OM no longer has is kept unless --allow-delete
+    (ws / "scripts" / "CLU123456789" / "hello.lua.vd").unlink()
+    omp.import_workspace(ws, d, house.secrets_file)
+    assert (d / "scripts" / "CLU123456789" / "hello.lua.vd").exists()
+    omp.import_workspace(ws, d, house.secrets_file, allow_delete=True)
+    assert not (d / "scripts" / "CLU123456789" / "hello.lua.vd").exists()
+
+
+def test_import_workspace_needs_an_open_project(house, tmp_path):
+    with pytest.raises(SystemExit, match="no project open"):
+        omp.import_workspace(tmp_path, house.project_dir, house.secrets_file)
+
+
+def test_redact_refuses_a_changed_key(house):
+    p = house.project_dir / "properties.xml"
+    p.write_text(p.read_text().replace("${GRENTON_PROJECT_KEY}", "c29tZS1vdGhlci1rZXk="))
+    with pytest.raises(SystemExit, match="different GRENTON_PROJECT_KEY"):
+        omp.redact(house.project_dir, house.secrets_file)
+
+
+def test_cli_runs_against_a_site(house, capsys, monkeypatch):
+    from grenton_kit.cli import main
+    monkeypatch.chdir(house.root)
+    main(["omp", "get-feature", BUTTON, "Label"])
+    assert capsys.readouterr().out.strip() == "Kitchen"
+    main(["mygrenton", "build"])
+    assert "widgets" in capsys.readouterr().out
+    main(["discover"])
+    assert (house.root / "inventory.md").exists() and (house.root / "site.draft.yaml").exists()

@@ -2,25 +2,154 @@
   <TreeObject id="1">
     <name>System</name>
     <children id="2">
-      <TreeObject id="3">
-        <name>CLU123456789</name>
-        <parent reference="1"/>
-        <children id="4"/>
-        <type>CLU</type>
-        <id>1</id>
-        <isDirty>false</isDirty>
-      </TreeObject>
-      <TreeObject id="20">
-        <name>myGrenton</name>
-        <parent reference="1"/>
-        <children id="21"/>
-        <type>MYGRENTON_INTERFACES</type>
-        <id>2</id>
-        <selected>false</selected>
-        <link>false</link>
-        <removedLink>false</removedLink>
-        <isDirty>false</isDirty>
-      </TreeObject>
+        <TreeObject id="3">
+          <name>CLU123456789</name>
+          <parent reference="1"/>
+          <children id="4">
+            <TreeObject id="11">
+              <name>Scripts</name>
+              <parent reference="3"/>
+              <children id="12">
+              <TreeObject id="13">
+                <name>hello</name>
+                <parent reference="11"/>
+                <children id="14"/>
+                <type>SCRIPT</type>
+                <id>5</id>
+                <specificObject class="Script" id="15">
+                  <name>hello</name>
+                  <parameters id="16"/>
+                  <isManualEdit>true</isManualEdit>
+                </specificObject>
+                <selected>false</selected>
+                <link>false</link>
+                <removedLink>false</removedLink>
+                <isDirty>false</isDirty>
+              </TreeObject>
+              </children>
+              <type>SCRIPTS</type>
+              <id>4</id>
+              <selected>false</selected>
+              <link>false</link>
+              <removedLink>false</removedLink>
+              <isDirty>false</isDirty>
+            </TreeObject>
+            <TreeObject id="17">
+              <name>x270000001_PANEL_BUTTON_01</name>
+              <parent reference="3"/>
+              <children id="18"/>
+              <type>INPUT</type>
+              <id>6</id>
+              <specificObject class="Input" reference="100"/>
+              <selected>false</selected>
+              <link>false</link>
+              <removedLink>false</removedLink>
+              <isDirty>false</isDirty>
+            </TreeObject>
+          </children>
+          <type>CLU</type>
+          <id>1</id>
+          <selected>false</selected>
+          <link>false</link>
+          <removedLink>false</removedLink>
+          <isDirty>false</isDirty>
+        </TreeObject>
+        <TreeObject id="9">
+          <name>CLU987654321</name>
+          <parent reference="1"/>
+          <children id="10">
+            <TreeObject id="31">
+              <name>Scripts</name>
+              <parent reference="9"/>
+              <children id="32"/>
+              <type>SCRIPTS</type>
+              <id>8</id>
+              <selected>false</selected>
+              <link>false</link>
+              <removedLink>false</removedLink>
+              <isDirty>false</isDirty>
+            </TreeObject>
+            <TreeObject id="19">
+              <name>x320000001_DIMM_01_Kitchen</name>
+              <parent reference="9"/>
+              <children id="20"/>
+              <type>OUTPUT</type>
+              <id>7</id>
+              <specificObject class="Output" reference="200"/>
+              <selected>false</selected>
+              <link>false</link>
+              <removedLink>false</removedLink>
+              <isDirty>false</isDirty>
+            </TreeObject>
+          </children>
+          <type>CLU</type>
+          <id>2</id>
+          <selected>false</selected>
+          <link>false</link>
+          <removedLink>false</removedLink>
+          <isDirty>false</isDirty>
+        </TreeObject>
+        <TreeObject id="21">
+          <name>myGrenton</name>
+          <parent reference="1"/>
+          <children id="22"/>
+          <type>MYGRENTON_INTERFACES</type>
+          <id>3</id>
+          <selected>false</selected>
+          <link>false</link>
+          <removedLink>false</removedLink>
+          <isDirty>false</isDirty>
+        </TreeObject>
     </children>
   </TreeObject>
+  <definitions id="99">
+      <Input id="100">
+        <name>x270000001_PANEL_BUTTON_01</name>
+        <nameOnCLU>PBU0001</nameOnCLU>
+        <type>PANEL_BUTTON</type>
+        <features id="101">
+          <EmbeddedFeature id="103">
+            <name>Mode</name>
+            <accessType>ALL</accessType>
+            <initValue>0</initValue>
+            <index>0</index>
+          </EmbeddedFeature>
+          <EmbeddedFeature id="104">
+            <name>Label</name>
+            <accessType>ALL</accessType>
+            <initValue>Kitchen</initValue>
+            <index>0</index>
+          </EmbeddedFeature>
+        </features>
+        <events id="102">
+          <Event id="110">
+            <name>OnHold</name>
+            <argList class="linked-list" id="111"/>
+            <commands class="linked-list" id="112"/>
+          </Event>
+          <Event id="120">
+            <name>OnClick</name>
+            <argList class="linked-list" id="121"/>
+            <commands class="linked-list" id="122">
+              <string>CLU987654321-&gt;x320000001_DIMM_01_Kitchen-&gt;Switch(0)</string>
+            </commands>
+          </Event>
+        </events>
+      </Input>
+      <Output id="200">
+        <name>x320000001_DIMM_01_Kitchen</name>
+        <nameOnCLU>DIM0001</nameOnCLU>
+        <type>DIMM</type>
+        <features id="201">
+          <EmbeddedFeature id="203">
+            <name>MinValue</name>
+            <accessType>ALL</accessType>
+            <initValue>0</initValue>
+            <index>0</index>
+          </EmbeddedFeature>
+        </features>
+        <events id="202">
+        </events>
+      </Output>
+  </definitions>
 </object-stream>

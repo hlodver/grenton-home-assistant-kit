@@ -1,6 +1,6 @@
 {
- "source": "test",
- "comment_b64": "",
+ "source": "synthetic",
+ "comment_b64": "YmFja3VwX1Rlc3QgSG91c2U=",
  "entries": [
   {
    "name": "system.xml",
@@ -36,6 +36,70 @@
   },
   {
    "name": "properties.xml",
+   "date_time": [
+    2026,
+    1,
+    1,
+    12,
+    0,
+    0
+   ],
+   "compress_type": 8,
+   "create_system": 3,
+   "create_version": 20,
+   "extract_version": 20,
+   "external_attr": 2175008768
+  },
+  {
+   "name": "scripts/",
+   "date_time": [
+    2026,
+    1,
+    1,
+    12,
+    0,
+    0
+   ],
+   "compress_type": 0,
+   "create_system": 3,
+   "create_version": 20,
+   "extract_version": 20,
+   "external_attr": 2175008768
+  },
+  {
+   "name": "scripts/CLU123456789/",
+   "date_time": [
+    2026,
+    1,
+    1,
+    12,
+    0,
+    0
+   ],
+   "compress_type": 0,
+   "create_system": 3,
+   "create_version": 20,
+   "extract_version": 20,
+   "external_attr": 2175008768
+  },
+  {
+   "name": "scripts/CLU123456789/hello.lua",
+   "date_time": [
+    2026,
+    1,
+    1,
+    12,
+    0,
+    0
+   ],
+   "compress_type": 8,
+   "create_system": 3,
+   "create_version": 20,
+   "extract_version": 20,
+   "external_attr": 2175008768
+  },
+  {
+   "name": "scripts/CLU123456789/hello.lua.vd",
    "date_time": [
     2026,
     1,
