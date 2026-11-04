@@ -23,7 +23,15 @@ owner stays in control of the CLUs.
 - **The owner decides; you propose.** Bring a concrete proposal (a table, a short list)
   and ask them to correct it. Don't ask open questions you could answer from the
   inventory.
-- **Ask in batches,** grouped by room or by question type. Never one light at a time.
+- **One question at a time, with suggested replies.** Each turn asks exactly one thing,
+  using the AskUserQuestion tool when it's available:
+  - 2–4 options, your recommendation first and marked "(Recommended)"
+  - "Other" for anything else (the tool adds it)
+
+  A question can still cover a whole group, such as "Is this room list right?" with
+  the table shown just before it. Never stack several questions in one message: the
+  owner's answer to the first often settles the next, so ask, take the answer, and
+  only then ask the next. Skip any question the answers so far have already settled.
 - **Only the owner sends to the CLUs,** from Object Manager. You prepare `.omp` files; they
   open and send them, then you import and verify.
 - **Commit after every step,** with a message that says what changed. Update the
@@ -56,7 +64,8 @@ object name. Expect it to be rough: the guess often makes one room per object na
 
 ## Step 3: interview
 
-Work through these in order, each as one proposal for the owner to correct:
+Work through these in order. Each is one question, a proposal with suggested replies,
+asked only after the previous one is answered:
 
 1. **The house:** its name, and the language for labels. Floors, if the house has
    several. Drawings or a floor plan help (PDF or photo); read them if offered.
@@ -89,7 +98,8 @@ Ask first ("Can I flash dimmer 320000123 now? Watch the lights."). Then:
 
     grenton ha blink light.<entity> --times 3
 
-Ask what blinked, then update `site.yaml`. Without HA yet, leave the light on an
+Ask what blinked, with suggested replies: the likely candidates from the inventory,
+plus "Nothing blinked". Then update `site.yaml`. Without HA yet, leave the light on an
 "Unknown" page and come back to it after step 6.
 
 ## Step 5: interface into Object Manager

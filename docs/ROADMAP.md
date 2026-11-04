@@ -55,8 +55,9 @@ house-specific lives here.
   - rooms are right for 23 of 33 lights
   - the rest are questions for the interview: lights controlled through group panels,
     the garage relays, a dimmer with no name
-- [ ] Acceptance, interview part: one real onboarding session with someone else's house
-      (or a fresh run on the first house).
+- [x] Acceptance, interview part: the first house's owner ran `/onboard` on a fresh copy
+      (2026-11-04): "Looks really good." Changed after it: one question at a time, with
+      suggested replies (AskUserQuestion), instead of batches.
 - [ ] `blink` tested on site.
 
 ## Phase 4: documentation (done 2026-11-04)
