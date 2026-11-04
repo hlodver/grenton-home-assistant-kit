@@ -1,4 +1,4 @@
-# grenton-as-code
+# grenton-home-assistant-kit
 
 Keep a [Grenton](https://www.grenton.com) Object Manager project in git. Generate the
 myGrenton interface from one file. Use it to set up Home Assistant with sensible rooms,
@@ -39,7 +39,7 @@ See [`examples/site.example.yaml`](examples/site.example.yaml) for every key.
 ## Install
 
 ```sh
-uv tool install git+https://github.com/hlodver/grenton-as-code   # or: uv run --project <clone> grenton ...
+uv tool install git+https://github.com/hlodver/grenton-home-assistant-kit   # or: uv run --project <clone> grenton ...
 ```
 
 ## License

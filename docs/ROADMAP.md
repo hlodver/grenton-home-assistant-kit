@@ -7,7 +7,7 @@ house-specific lives here.
 
 ## Phase 1: extract the code (done 2026-11-04)
 
-- [x] `grenton_as_code` package with the `grenton` CLI (uv)
+- [x] `grenton_kit` package with the `grenton` CLI (uv)
 - [x] `omp`: unpack, pack, import-workspace, event, script and feature edits; the project
       key is kept out of git
 - [x] `mygrenton build`: pages, dimmers (DIMM, DALI), on/off (DOUT, or a dimmer with an

@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 
-from grenton_as_code import mygrenton, omp, site
-from grenton_as_code.ha.client import rest_url, ws_url
-from grenton_as_code.ha.sync import dashboard_config, split_lights
+from grenton_kit import mygrenton, omp, site
+from grenton_kit.ha.client import rest_url, ws_url
+from grenton_kit.ha.sync import dashboard_config, split_lights
 
 FIXTURE = Path(__file__).parent / "fixtures" / "house"
 KEY, IV = "c2VjcmV0LWtleS0xMjM0NQ==", "aXYtNjc4OQ=="
