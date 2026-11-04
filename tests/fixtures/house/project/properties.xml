@@ -1,0 +1,4 @@
+<properties>
+  <keyBytes>${GRENTON_PROJECT_KEY}</keyBytes>
+  <ivBytes>${GRENTON_PROJECT_IV}</ivBytes>
+</properties>

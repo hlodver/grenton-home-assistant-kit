@@ -1,0 +1,29 @@
+name: Test House
+areas:
+  kitchen: {name: Kitchen, icon: "mdi:stove"}
+  living: Living room
+  garage: Garage
+mygrenton:
+  id: 00000000-0000-4000-8000-000000000001
+  pages:
+    - label: Kitchen
+      icon: kitchen
+      area: kitchen
+      lights:
+        - {object: x320000001_DIMM_01_Kitchen, label: Kitchen ceiling}
+        - {object: x320000002_DIMM_01_Cabinet, label: Cabinet, onoff: true}
+    - label: Living
+      area: living
+      lights:
+        - {object: x490000000001_DALI_GEAR_01, label: LED strip, entity_id: light.living_led}
+        - {object: x201000001_DOUT_01, label: Garage, area: garage}
+not_connected:
+  x320000003_DIMM_01_Spare: nothing wired
+thermostats:
+  page: {label: Heating}
+  values_page: {label: Temperatures}
+  list:
+    - {object: Thermo_Living, label: Living room, area: living}
+homeassistant:
+  url: http://ha.local:8123
+  dashboard: {url_path: home-lights, title: Home}

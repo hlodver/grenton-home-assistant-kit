@@ -1,0 +1,26 @@
+<object-stream>
+  <TreeObject id="1">
+    <name>System</name>
+    <children id="2">
+      <TreeObject id="3">
+        <name>CLU123456789</name>
+        <parent reference="1"/>
+        <children id="4"/>
+        <type>CLU</type>
+        <id>1</id>
+        <isDirty>false</isDirty>
+      </TreeObject>
+      <TreeObject id="20">
+        <name>myGrenton</name>
+        <parent reference="1"/>
+        <children id="21"/>
+        <type>MYGRENTON_INTERFACES</type>
+        <id>2</id>
+        <selected>false</selected>
+        <link>false</link>
+        <removedLink>false</removedLink>
+        <isDirty>false</isDirty>
+      </TreeObject>
+    </children>
+  </TreeObject>
+</object-stream>

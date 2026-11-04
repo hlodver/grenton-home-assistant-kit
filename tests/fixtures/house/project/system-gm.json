@@ -1,0 +1,41 @@
+{
+  "label" : "Test House",
+  "projectKey" : "${GRENTON_PROJECT_KEY}",
+  "clus" : [ {
+    "name" : "CLU123456789",
+    "nameOnCLU" : "CLU123456789",
+    "peripheries" : [ {
+      "name" : "Thermo_Living",
+      "nameOnCLU" : "THE0001",
+      "typeName" : "Thermostat",
+      "typeId" : "18",
+      "typeVersion" : "2"
+    } ],
+    "modules" : [ {
+      "name" : "x201000001_DOUT_01",
+      "nameOnCLU" : "DOU0001",
+      "type" : "DOUT"
+    }, {
+      "name" : "x490000000001_DALI_GEAR_01",
+      "nameOnCLU" : "DAL0001",
+      "type" : "DALI_GEAR"
+    } ]
+  }, {
+    "name" : "CLU987654321",
+    "nameOnCLU" : "CLU555555",
+    "peripheries" : [ ],
+    "modules" : [ {
+      "name" : "x320000001_DIMM_01_Kitchen",
+      "nameOnCLU" : "DIM0001",
+      "type" : "DIMM"
+    }, {
+      "name" : "x320000002_DIMM_01_Cabinet",
+      "nameOnCLU" : "DIM0002",
+      "type" : "DIMM"
+    }, {
+      "name" : "x320000003_DIMM_01_Spare",
+      "nameOnCLU" : "DIM0003",
+      "type" : "DIMM"
+    } ]
+  } ]
+}

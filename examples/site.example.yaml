@@ -1,0 +1,86 @@
+# site.yaml: everything specific to one house. Every key, with defaults noted.
+# The tools read the Object Manager project for CLUs, modules and object types, so you
+# only describe what the project can't tell: where things are and what they're called.
+# Paths are relative to this file.
+
+name: My House
+
+project:
+  dir: project                     # unpacked OM project (default: project)
+  secrets: secrets/grenton.env     # GRENTON_PROJECT_KEY=... / GRENTON_PROJECT_IV=... (gitignored)
+  workspace: ~/Library/Application Support/.../workspace/My House   # OM's live workspace, for
+                                   # `grenton omp import-workspace` while the project is open in OM
+  default_clu: CLU123456789        # for add-script / set-script without --clu
+
+homeassistant:
+  url: http://homeassistant.local:8123
+  token_file: secrets/ha.env       # a line HA_TOKEN=<long-lived token>, gitignored
+  token_command: op read op://Private/HomeAssistantToken/credential   # optional fallback; runs once per call of the tool
+  remove_areas: [living_room, kitchen, bedroom]   # HA onboarding areas you don't use
+  dashboard: {url_path: home-lights, title: Home, icon: "mdi:home"}   # url_path needs a hyphen
+  groups:                          # light groups (group helper)
+    - {entity_id: light.garage_all, name: Garage all, area: garage,
+       members: [light.garage_1, light.garage_2]}
+
+# Words used in generated labels, entity ids and the dashboard (defaults shown).
+strings:
+  temperature: temperature         # "<thermostat> temperature" -> sensor.<slug>_temperature
+  setpoint: setpoint               # "<thermostat> setpoint"    -> number.<slug>_setpoint
+  switch_suffix: switch            # hidden switch behind an on/off light: switch.<light>_switch
+  lights_view: Lights
+  heat_view: Heating
+  history_title: Last 24 hours
+  heat_note: null                  # optional markdown on the heating view
+
+# Home Assistant areas. The key is the area id; `name` alone is fine as a short form.
+areas:
+  kitchen: {name: Kitchen, icon: "mdi:stove"}
+  living: {name: Living room, icon: "mdi:sofa"}
+  garage: Garage
+
+mygrenton:
+  label: My House                  # interface name in OM (default: name)
+  id: 3f0c8f8e-5b1d-4a57-9a51-0c3e1f2a7b10   # any UUID; keep it once HA has imported the interface
+  icon: home_1
+  theme: blue
+  first_widget_id: 1793740100000   # widget/page ids count up from here
+  adopt: null                      # optional: an interface JSON made in OM whose THERMOSTAT_V2
+                                   # widgets (ids, dtoIds) should be kept as they are
+
+  # Pages in app order. A light is any DIMM, DALI_GEAR or DOUT object. The type comes from
+  # the project: DIMM -> dimmer, DALI_GEAR -> DALI dimmer (0-254), DOUT -> on/off.
+  pages:
+    - label: Kitchen
+      icon: kitchen                # myGrenton page icon
+      area: kitchen                # default area for the lights below
+      lights:
+        - object: x320000001_DIMM_01_Kitchen   # OM object name
+          label: Kitchen ceiling   # widget label; also the HA entity's original name
+          name: Kitchen            # HA name (default: label)
+          entity_id: light.kitchen # default: light.<slug of name>
+        - {object: x320000002_DIMM_01_Cabinet, label: Cabinet, onoff: true}   # dimmer channel,
+                                   # load can't be dimmed: on/off widget, HA light via switch_as_x
+    - label: Garage
+      icon: garage
+      area: garage
+      lights:
+        - {object: x201000001_DOUT_01, label: Garage 1, entity_id: light.garage_1}
+        - {object: x201000001_DOUT_02, label: Garage 2, entity_id: light.garage_2}
+
+# Light outputs with nothing connected. The build fails on any light that is neither on a
+# page nor listed here, so nothing is forgotten.
+not_connected:
+  x320000003_DIMM_01_Spare: nothing wired (checked 2026-11-03)
+
+# Thermostats: a THERMOSTAT_V2 widget for the phone app, plus a temperature value and a
+# setpoint slider for Home Assistant (its Grenton integration has no thermostat support).
+thermostats:
+  page: {label: Heating, icon: default}       # omit to leave out the THERMOSTAT_V2 page
+  values_page: {label: Temperatures, icon: default}
+  setpoint_range: [10, 28]
+  list:
+    - object: Thermo_Living        # OM object name
+      label: Living room           # widget label
+      name: Living room            # HA name (default: label)
+      slug: living_room            # entity ids (default: slug of name)
+      area: living                 # null = not tied to a room (e.g. a whole-house thermostat)

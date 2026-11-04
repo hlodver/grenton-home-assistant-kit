@@ -1,0 +1,54 @@
+{
+ "source": "test",
+ "comment_b64": "",
+ "entries": [
+  {
+   "name": "system.xml",
+   "date_time": [
+    2026,
+    1,
+    1,
+    12,
+    0,
+    0
+   ],
+   "compress_type": 8,
+   "create_system": 3,
+   "create_version": 20,
+   "extract_version": 20,
+   "external_attr": 2175008768
+  },
+  {
+   "name": "system-gm.json",
+   "date_time": [
+    2026,
+    1,
+    1,
+    12,
+    0,
+    0
+   ],
+   "compress_type": 8,
+   "create_system": 3,
+   "create_version": 20,
+   "extract_version": 20,
+   "external_attr": 2175008768
+  },
+  {
+   "name": "properties.xml",
+   "date_time": [
+    2026,
+    1,
+    1,
+    12,
+    0,
+    0
+   ],
+   "compress_type": 8,
+   "create_system": 3,
+   "create_version": 20,
+   "extract_version": 20,
+   "external_attr": 2175008768
+  }
+ ]
+}
