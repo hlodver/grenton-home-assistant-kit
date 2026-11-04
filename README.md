@@ -4,9 +4,14 @@ Keep a [Grenton](https://www.grenton.com) Object Manager project in git. Generat
 myGrenton interface from one file. Use it to set up Home Assistant with sensible rooms,
 names and entity ids.
 
-> Status: early. Extracted from a working house setup (Object Manager 1.x, CLU Z-Wave and
-> FM, Home Assistant 2026.10 with the
-> [Grenton integration](https://github.com/sszczep/homeassistant-grenton)). Expect rough edges.
+> Status: early. Extracted from one working house: Object Manager 1.13.1, two CLUs,
+> about 35 dimmers and relays and 12 thermostats, Home Assistant 2026.10 with the
+> [Grenton integration](https://github.com/sszczep/homeassistant-grenton). Expect rough edges,
+> and please open an issue when your installation differs.
+
+| myGrenton interface, generated from `site.yaml` | The same house in Home Assistant after `grenton ha sync` |
+|---|---|
+| ![Generated myGrenton pages in Object Manager](docs/images/mygrenton-interface.png) | ![A room in Home Assistant with dimmers, on/off lights and thermostat values](docs/images/home-assistant-area.png) |
 
 ## Getting started
 
@@ -72,6 +77,17 @@ See [`examples/site.example.yaml`](examples/site.example.yaml) for every key.
 ```sh
 uv tool install git+https://github.com/hlodver/grenton-home-assistant-kit   # or: uv run --project <clone> grenton ...
 ```
+
+## Related projects
+
+- **[sszczep/homeassistant-grenton](https://github.com/sszczep/homeassistant-grenton)**: the HA
+  integration this kit is built for. It imports the myGrenton interface from Object Manager and
+  talks to the CLUs at runtime. This kit generates that interface and tidies up what the
+  integration creates. It doesn't replace the integration.
+- **[jnalepka/grenton-to-homeassistant](https://github.com/jnalepka/grenton-to-homeassistant)**:
+  a different integration. You configure entities in HA, and Lua scripts plus an HTTP listener
+  on the CLU push state changes. It's a good fit if you prefer to set things up from the HA
+  side. This kit's `omp` tools can still keep such a project in git.
 
 ## License
 
