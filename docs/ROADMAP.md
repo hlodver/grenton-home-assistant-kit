@@ -29,29 +29,35 @@ house-specific lives here.
       `grenton_kit.omp`. Re-running it leaves the project byte-identical. It may later
       become a config-driven "event commands" feature here.
 
-## Phase 3: onboarding
+## Phase 3: onboarding (built 2026-11-04; the interview is untested with a real new user)
 
-- `grenton discover`: reads the project and writes `inventory.md`, listing CLUs with
-  their nameOnCLU, modules and outputs by type, thermostats, scripts and existing
-  interfaces. It also writes a first draft of `site.yaml` with rooms guessed from
-  object names.
-- `grenton init <folder>`: creates a new site repo with `.gitignore`, `secrets/`, a
-  `site.yaml` skeleton and `docs/STATUS.md`, `LOG.md` and `LESSONS.md`.
-- `/onboard` skill (`.claude/skills/onboard/`) for an AI-guided session:
-  1. Check prerequisites.
-  2. Import the project and commit it.
-  3. Discover.
-  4. Interview: house, floors, optional drawings, rooms, which loads are dimmable or
-     on/off, what isn't connected, odd names.
-  5. Blink test for unknown outputs, only with the person on site and their
-     confirmation before each blink.
-  6. Generate; the person sends from OM.
-  7. Home Assistant: token, adding the integration, sync.
-  8. Hand-off: status docs and a known-good tag.
+- [x] `grenton discover` reads the project and writes `inventory.md`. It lists:
+  - CLUs, flagging renamed ones (nameOnCLU)
+  - lights with what controls them (panel buttons, group scripts)
+  - relays classed as heating, switched, scripts only or unused
+  - thermostats with sensor and output, panels, scripts, and existing interfaces
 
-  Progress is kept in `docs/STATUS.md`, so the session can be resumed.
-- Acceptance: onboard the first house from scratch in a temporary folder and compare the
-  result with its hand-made `site.yaml`.
+  It also writes a first `site.yaml`, or `site.draft.yaml` if one exists. Rooms are
+  guessed from the controlling panel, then the object name, then group panels. Labels
+  are reused from an existing interface.
+- [x] `grenton init <folder> --omp <file>` creates a site repo:
+  - takes the key from the `.omp` into `secrets/` (mode 600), unpacks, discovers
+  - writes README, CLAUDE.md, the docs (STATUS has an onboarding checklist) and the
+    `/onboard` skill
+  - commits, and refuses to commit secrets
+- [x] `grenton ha blink` flashes a light and restores its state, to find unknown outputs.
+- [x] `/onboard` skill (`templates/skills/onboard/SKILL.md`, copied into each site repo).
+- [x] Acceptance, mechanical part, on the first house from scratch:
+  - `init` from its `.omp` gives an identical project and the same key; nothing secret
+    is committed
+  - the draft builds without edits
+  - all 33 named lights and 12 thermostats are found, and 33 of 33 labels are reused
+  - rooms are right for 23 of 33 lights
+  - the rest are questions for the interview: lights controlled through group panels,
+    the garage relays, a dimmer with no name
+- [ ] Acceptance, interview part: one real onboarding session with someone else's house
+      (or a fresh run on the first house).
+- [ ] `blink` tested on site.
 
 ## Phase 4: documentation
 

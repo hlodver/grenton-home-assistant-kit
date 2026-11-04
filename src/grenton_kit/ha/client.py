@@ -103,3 +103,21 @@ class HA:
         if r.get("type") not in ("create_entry", "abort"):
             raise SystemExit(f"flow {start} ended in {r.get('type')}: {r.get('errors')} {r.get('step_id')}")
         return r
+
+
+async def blink(ha_cfg, entity_id, times=3, seconds=1.0):
+    """Flash a light so someone on site can say which one it is; restore its state after."""
+    import asyncio
+    async with HA(ha_cfg) as ha:
+        before = ha.rest("GET", f"/api/states/{entity_id}")
+        domain = entity_id.split(".")[0]
+        on, off = (f"/api/services/{domain}/turn_on", f"/api/services/{domain}/turn_off")
+        was_on = before["state"] == "on"
+        for _ in range(times):
+            ha.rest("POST", off if was_on else on, {"entity_id": entity_id})
+            await asyncio.sleep(seconds)
+            ha.rest("POST", on if was_on else off, {"entity_id": entity_id})
+            await asyncio.sleep(seconds)
+        if was_on and before["attributes"].get("brightness") is not None:
+            ha.rest("POST", on, {"entity_id": entity_id, "brightness": before["attributes"]["brightness"]})
+        return before["state"]

@@ -8,6 +8,25 @@ names and entity ids.
 > FM, Home Assistant 2026.10 with the
 > [Grenton integration](https://github.com/sszczep/homeassistant-grenton)). Expect rough edges.
 
+## Getting started
+
+```sh
+grenton init my-house --omp "My House.omp"   # an OM save or backup
+cd my-house
+claude                                        # then: /onboard
+```
+
+`init` takes the project key into `secrets/`, unpacks the project and writes
+`inventory.md`, which lists everything in the project and what controls it. It also
+writes a first `site.yaml`. The **`/onboard`** session in Claude Code takes it from there:
+- an interview about rooms, names and which loads are dimmable
+- a blink test for unknown outputs
+- generating the interface
+- setting up Home Assistant
+
+Progress is kept in `docs/STATUS.md`, so you can stop and continue later. Without Claude
+Code, edit `site.yaml` by hand; the commands below are all there is.
+
 ## Idea
 
 One house is one **site folder**:
@@ -26,6 +45,7 @@ object types. It reads `site.yaml` for the rest.
   and git. Packing gives back a byte-identical `.omp` when nothing changed. The
   project key is replaced with a placeholder in git and only restored in the `.omp`.
 - `grenton omp add-event-command|set-feature|add-script ...`: small, reviewable edits.
+- `grenton discover`: describes the project in `inventory.md` and drafts `site.yaml`.
 - `grenton mygrenton build`: writes the myGrenton interface (pages, dimmers, on/off,
   thermostats, temperature values, setpoint sliders) into the project. Open it in OM and
   send.
@@ -33,6 +53,8 @@ object types. It reads `site.yaml` for the rest.
   it sets areas, device and entity names, and entity ids. It also wraps on/off loads as
   lights, creates light groups, sets thermostat units, and writes a dashboard. It's a dry
   run unless you pass `--apply`.
+- `grenton ha blink <light>`: flashes a light, then restores it. It finds unknown
+  outputs, so someone must be on site.
 
 See [`examples/site.example.yaml`](examples/site.example.yaml) for every key.
 

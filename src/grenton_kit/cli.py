@@ -7,9 +7,12 @@
   grenton omp replace-event-command OBJ OLD NEW
   grenton omp add-script NAME FILE [--param name:NUMBER:default] [--clu CLU] | set-script NAME FILE
   grenton omp get-feature OBJ FEATURE | set-feature OBJ FEATURE VALUE
+  grenton init FOLDER [--omp FILE]          new site repo (from an OM save or backup)
+  grenton discover                          inventory.md + a first site.yaml from the project
   grenton mygrenton build                   generate the myGrenton interface into project/
   grenton ha call '<ws message>' ...        raw Home Assistant websocket calls
   grenton ha sync [--apply]                 line HA up with site.yaml (dry run by default)
+  grenton ha blink ENTITY|OBJECT|LABEL      flash a light to find it (someone must be on site)
 
 Options before the command: --site PATH (default: site.yaml here or in a parent folder).
 """
@@ -44,14 +47,39 @@ def main(argv=None):
     g = o.add_parser("get-feature"); g.add_argument("obj"); g.add_argument("feature")
     s = o.add_parser("set-feature"); s.add_argument("obj"); s.add_argument("feature"); s.add_argument("value")
 
+    i = top.add_parser("init", help="create a site repo"); i.add_argument("folder"); i.add_argument("--omp")
+    i.add_argument("--no-git", action="store_true")
+    dc = top.add_parser("discover", help="describe the project, draft site.yaml")
+    dc.add_argument("--project", help="project folder (default: from site.yaml, else ./project)")
+
     m = top.add_parser("mygrenton", help="myGrenton interface").add_subparsers(dest="cmd", required=True)
     m.add_parser("build")
 
     h = top.add_parser("ha", help="Home Assistant").add_subparsers(dest="cmd", required=True)
     hc = h.add_parser("call"); hc.add_argument("messages", nargs="*"); hc.add_argument("-f", dest="file")
     hs = h.add_parser("sync"); hs.add_argument("--apply", action="store_true")
+    hb = h.add_parser("blink"); hb.add_argument("target"); hb.add_argument("--times", type=int, default=3)
+    hb.add_argument("--seconds", type=float, default=1.0)
 
     a = ap.parse_args(argv)
+    if a.group == "init":
+        from .init import init
+        init(a.folder, a.omp, git=not a.no_git)
+        return
+    if a.group == "discover":
+        from .init import write_discovery
+        if a.project:
+            proj, here = Path(a.project), Path.cwd()
+        else:
+            try:
+                s0 = site_mod.load(a.site)
+                proj, here = s0.project_dir, s0.root
+            except SystemExit:
+                proj, here = Path("project"), Path.cwd()
+        inv, written = write_discovery(proj, here)
+        print(f"{len(inv['lights'])} lights, {len(inv['relays'])} relays, {len(inv['thermostats'])} thermostats, "
+              f"{len(inv['clus'])} CLUs; wrote {', '.join(written)}")
+        return
     st = site_mod.load(a.site)
     d, sec = st.project_dir, st.secrets_file
 
@@ -93,6 +121,17 @@ def main(argv=None):
         if a.cmd == "sync":
             from .ha.sync import sync
             asyncio.run(sync(st, apply=a.apply))
+        elif a.cmd == "blink":
+            from .ha.client import blink
+            target = a.target
+            if "." not in target:  # an OM object name or a widget label from site.yaml
+                lt = next((x for x in st.lights if target in (x.object, x.label)), None)
+                if not lt:
+                    raise SystemExit(f"{target!r} is not a light in site.yaml; pass an entity id")
+                target = lt.entity_id
+            print(f"blinking {target} {a.times}x")
+            state = asyncio.run(blink(st.ha, target, a.times, a.seconds))
+            print(f"done; restored to {state}")
         else:
             from .ha.client import HA
             msgs = json.load(open(a.file)) if a.file else [json.loads(x) for x in a.messages]

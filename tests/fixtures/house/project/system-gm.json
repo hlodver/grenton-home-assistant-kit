@@ -1,41 +1,109 @@
 {
-  "label" : "Test House",
-  "projectKey" : "${GRENTON_PROJECT_KEY}",
-  "clus" : [ {
-    "name" : "CLU123456789",
-    "nameOnCLU" : "CLU123456789",
-    "peripheries" : [ {
-      "name" : "Thermo_Living",
-      "nameOnCLU" : "THE0001",
-      "typeName" : "Thermostat",
-      "typeId" : "18",
-      "typeVersion" : "2"
-    } ],
-    "modules" : [ {
-      "name" : "x201000001_DOUT_01",
-      "nameOnCLU" : "DOU0001",
-      "type" : "DOUT"
-    }, {
-      "name" : "x490000000001_DALI_GEAR_01",
-      "nameOnCLU" : "DAL0001",
-      "type" : "DALI_GEAR"
-    } ]
-  }, {
-    "name" : "CLU987654321",
-    "nameOnCLU" : "CLU555555",
-    "peripheries" : [ ],
-    "modules" : [ {
-      "name" : "x320000001_DIMM_01_Kitchen",
-      "nameOnCLU" : "DIM0001",
-      "type" : "DIMM"
-    }, {
-      "name" : "x320000002_DIMM_01_Cabinet",
-      "nameOnCLU" : "DIM0002",
-      "type" : "DIMM"
-    }, {
-      "name" : "x320000003_DIMM_01_Spare",
-      "nameOnCLU" : "DIM0003",
-      "type" : "DIMM"
-    } ]
-  } ]
+  "label": "Test House",
+  "projectKey": "${GRENTON_PROJECT_KEY}",
+  "clus": [
+    {
+      "name": "CLU123456789",
+      "nameOnCLU": "CLU123456789",
+      "peripheries": [
+        {
+          "name": "Thermo_Living",
+          "nameOnCLU": "THE0001",
+          "typeName": "Thermostat",
+          "typeId": "18",
+          "typeVersion": "2",
+          "embeddedFeatures": [
+            {
+              "name": "Source",
+              "index": 0,
+              "initValue": "CLU123456789->x270000001_PANELSENSTEMP_01->Value"
+            },
+            {
+              "name": "Target",
+              "index": 1,
+              "initValue": "CLU123456789->x330000001_DOUT_01->Value"
+            }
+          ]
+        }
+      ],
+      "modules": [
+        {
+          "name": "x201000001_DOUT_01",
+          "nameOnCLU": "DOU0001",
+          "type": "DOUT"
+        },
+        {
+          "name": "x490000000001_DALI_GEAR_01",
+          "nameOnCLU": "DAL0001",
+          "type": "DALI_GEAR"
+        },
+        {
+          "name": "x270000001_PANEL_01_Living_room_L",
+          "nameOnCLU": "PAN0001",
+          "type": "PANEL",
+          "events": []
+        },
+        {
+          "name": "x270000001_PANELSENSTEMP_01",
+          "nameOnCLU": "PST0001",
+          "type": "PANELSENSTEMP",
+          "events": []
+        },
+        {
+          "name": "x270000001_PANEL_BUTTON_01",
+          "nameOnCLU": "PBU0001",
+          "type": "PANEL_BUTTON",
+          "events": [
+            {
+              "name": "OnClick",
+              "index": 0,
+              "command": [
+                "CLU987654321->x320000001_DIMM_01_Kitchen->Switch(0)"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "x330000001_DOUT_01",
+          "nameOnCLU": "DOU0002",
+          "type": "DOUT",
+          "events": []
+        },
+        {
+          "name": "x330000001_DOUT_02",
+          "nameOnCLU": "DOU0003",
+          "type": "DOUT",
+          "events": []
+        },
+        {
+          "name": "x201000001_DOUT_02",
+          "nameOnCLU": "DOU0004",
+          "type": "DOUT",
+          "events": []
+        }
+      ]
+    },
+    {
+      "name": "CLU987654321",
+      "nameOnCLU": "CLU555555",
+      "peripheries": [],
+      "modules": [
+        {
+          "name": "x320000001_DIMM_01_Kitchen",
+          "nameOnCLU": "DIM0001",
+          "type": "DIMM"
+        },
+        {
+          "name": "x320000002_DIMM_01_Cabinet",
+          "nameOnCLU": "DIM0002",
+          "type": "DIMM"
+        },
+        {
+          "name": "x320000003_DIMM_01_Spare",
+          "nameOnCLU": "DIM0003",
+          "type": "DIMM"
+        }
+      ]
+    }
+  ]
 }

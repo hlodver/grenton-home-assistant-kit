@@ -499,3 +499,26 @@ def set_feature(d, obj, feature, value):
     if old != value:
         mark_dirty(d, obj)
     print(f"{obj}.{feature}: {old!r} -> {value!r}")
+
+
+def secrets_from_omp(omp_path, secrets_file):
+    """Write the project key/iv from an .omp's properties.xml to secrets_file (mode 600).
+
+    A new site starts from an OM save or backup; this is where its key comes from.
+    """
+    with zipfile.ZipFile(omp_path) as z:
+        props = z.read("properties.xml").decode("utf-8")
+    key = re.search(r"<keyBytes[^>]*>([^<]*)</keyBytes>", props)
+    iv = re.search(r"<ivBytes[^>]*>([^<]*)</ivBytes>", props)
+    if not key or not iv or key.group(1).startswith("${"):
+        raise SystemExit(f"{omp_path}: no project key in properties.xml")
+    secrets_file = Path(secrets_file)
+    body = f"GRENTON_PROJECT_KEY={key.group(1)}\nGRENTON_PROJECT_IV={iv.group(1)}\n"
+    if secrets_file.exists():
+        if secrets_file.read_text() != body:
+            raise SystemExit(f"{secrets_file} exists with a different key; not overwritten")
+        return
+    secrets_file.parent.mkdir(parents=True, exist_ok=True)
+    secrets_file.parent.chmod(0o700)
+    secrets_file.touch(mode=0o600)
+    secrets_file.write_text(body)
