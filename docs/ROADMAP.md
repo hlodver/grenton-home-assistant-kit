@@ -21,12 +21,13 @@ house-specific lives here.
     follows `site.yaml`
 - [x] Tests on a synthetic house (`tests/fixtures/house`)
 
-## Phase 2: switch the first site repo over
+## Phase 2: switch the first site repo over (done 2026-11-04)
 
-- The site repo depends on this package (path dependency now, git URL later).
-- Delete its copies of the tools.
-- House logic (button bindings, heating scripts) stays in the site repo. It may later
-  become a config-driven "event commands" feature here.
+- [x] The site repo depends on this package through a uv path dependency (`../grenton-home-assistant-kit`).
+- [x] Its copies of the tools are deleted.
+- [x] House logic (button bindings, heating scripts) stays in the site repo and imports
+      `grenton_kit.omp`. Re-running it leaves the project byte-identical. It may later
+      become a config-driven "event commands" feature here.
 
 ## Phase 3: onboarding
 
