@@ -169,7 +169,33 @@ def test_draft_site_builds(house, tmp_path):
     mygrenton.build(draft)
 
 
-def test_init_from_omp(house, tmp_path):
+@pytest.fixture
+def git_identity(monkeypatch):
+    for k in ("AUTHOR", "COMMITTER"):
+        monkeypatch.setenv(f"GIT_{k}_NAME", "Test")
+        monkeypatch.setenv(f"GIT_{k}_EMAIL", "test@example.com")
+
+
+def test_init_without_git_identity_stages_but_does_not_crash(house, tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("HOME", str(tmp_path))                 # no ~/.gitconfig
+    cfg = tmp_path / "gitconfig"
+    cfg.write_text("[user]\n\tuseConfigOnly = true\n")      # no identity guessed from host name
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(cfg))
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    for k in ("GIT_AUTHOR_NAME", "GIT_AUTHOR_EMAIL", "GIT_COMMITTER_NAME", "GIT_COMMITTER_EMAIL", "EMAIL"):
+        monkeypatch.delenv(k, raising=False)
+    import subprocess
+    if subprocess.run(["git", "var", "GIT_COMMITTER_IDENT"], cwd=tmp_path, capture_output=True).returncode == 0:
+        pytest.skip("git derives an identity on this machine anyway")
+    out = tmp_path / "house.omp"
+    omp.pack(house.project_dir, out, house.secrets_file)
+    new = init(tmp_path / "new", out, git=True)
+    assert "staged but not committed" in capsys.readouterr().out
+    staged = subprocess.run(["git", "diff", "--cached", "--name-only"], cwd=new, capture_output=True, text=True).stdout.split()
+    assert "site.yaml" in staged and not [f for f in staged if f.startswith("secrets/")]
+
+
+def test_init_from_omp(house, tmp_path, git_identity):
     out = tmp_path / "house.omp"
     omp.pack(house.project_dir, out, house.secrets_file)
     new = init(tmp_path / "new", out, git=True)

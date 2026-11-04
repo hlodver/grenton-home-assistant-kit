@@ -75,7 +75,16 @@ def init(folder, omp_file=None, git=True):
         leaked = [f for f in staged if f.startswith("secrets/") or f.endswith(".omp")]
         if leaked:
             raise SystemExit(f"refusing to commit secrets: {leaked}")
-        run("commit", "-q", "-m", f"grenton init{fmt['source'].replace('`', '')}")
+        message = f"grenton init{fmt['source'].replace('`', '')}"
+        has_identity = subprocess.run(["git", "var", "GIT_COMMITTER_IDENT"], cwd=folder,
+                                      capture_output=True).returncode == 0
+        if has_identity:
+            run("commit", "-q", "-m", message)
+        else:  # a fresh machine: git has no user.name / user.email yet
+            print("  git has no user name/email yet, so the files are staged but not committed. Run:\n"
+                  '    git config --global user.name "Your Name"\n'
+                  '    git config --global user.email you@example.com\n'
+                  f'    git -C "{folder}" commit -m "{message}"')
 
     print(f"site repo: {folder}")
     if inv:
